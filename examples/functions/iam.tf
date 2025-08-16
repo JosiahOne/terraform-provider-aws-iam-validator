@@ -10,7 +10,7 @@ provider "aws-iam-validator" {}
 
 
 locals {
-  test_data = <<EOT
+  test_data = <<EOF
   {
     "Version": "2012-10-17",
     "Statement": [
@@ -120,9 +120,9 @@ locals {
         }
     ]
 }
-EOT
+EOF
 }
 
 output "timestamp" {
-  value = provider::aws-iam-validator::validate_policy(local.test_data, "IDENTITY_POLICY")
+  value = provider::aws-iam-validator::validate_policy(local.test_data)
 }

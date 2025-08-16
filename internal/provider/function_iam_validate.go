@@ -34,6 +34,8 @@ func (f *ValidatePolicyFunction) Metadata(ctx context.Context, req function.Meta
 }
 
 func (f *ValidatePolicyFunction) Definition(ctx context.Context, req function.DefinitionRequest, resp *function.DefinitionResponse) {
+	tflog.Info(ctx, "ValidatePolicyFunction.GetDefinition")
+
 	resp.Definition = function.Definition{
 		Summary:     "Validate an AWS IAM policy JSON string using the AWS Access Analyzer ValidatePolicy API.",
 		Description: "Given an IAM policy JSON string, calls AWS ValidatePolicy and returns a list of validation errors.",
@@ -41,11 +43,6 @@ func (f *ValidatePolicyFunction) Definition(ctx context.Context, req function.De
 			function.StringParameter{
 				Name:        "policy_json",
 				Description: "IAM policy JSON string to validate.",
-			},
-			function.StringParameter{
-				Name:           "policy_type",
-				Description:    "Type of policy (IDENTITY_POLICY or RESOURCE_POLICY). Defaults to IDENTITY_POLICY.",
-				AllowNullValue: true,
 			},
 		},
 		Return: function.ObjectReturn{
@@ -55,21 +52,18 @@ func (f *ValidatePolicyFunction) Definition(ctx context.Context, req function.De
 }
 
 func (f *ValidatePolicyFunction) Run(ctx context.Context, req function.RunRequest, resp *function.RunResponse) {
-	var policyJSON string
-	var policyType string
 
-	// Get arguments
-	resp.Error = req.Arguments.Get(ctx, "policy_json", &policyJSON)
+	tflog.Info(ctx, "ValidatePolicyFunction.Run")
+	// Get arguments as attr.Value
+	var policyJSONVal string
+	resp.Error = req.Arguments.GetArgument(ctx, 0, &policyJSONVal)
 	if resp.Error != nil {
+		tflog.Error(ctx, fmt.Sprintf("ValidatePolicyFunction error: %s\n\n", resp.Error.Error()))
 		return
 	}
-	resp.Error = req.Arguments.Get(ctx, "policy_type", &policyType)
-	if resp.Error != nil {
-		return
-	}
-	if policyType == "" {
-		policyType = "IDENTITY_POLICY"
-	}
+
+	var policyType string = "IDENTITY_POLICY"
+	tflog.Info(ctx, "ValidatePolicyFunction.LoadingConfig")
 
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
@@ -80,7 +74,7 @@ func (f *ValidatePolicyFunction) Run(ctx context.Context, req function.RunReques
 
 	client := accessanalyzer.NewFromConfig(cfg)
 	input := &accessanalyzer.ValidatePolicyInput{
-		PolicyDocument: &policyJSON,
+		PolicyDocument: &policyJSONVal,
 		PolicyType:     awstypes.PolicyType(policyType),
 	}
 
