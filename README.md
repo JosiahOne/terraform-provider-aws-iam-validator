@@ -18,7 +18,7 @@ check "valid_check" {
 ## Datasource case
 
 ```
-data "aws_iam_validator_policy" "example" {
+data "aws-iam-validator" "example" {
   policy_json = <<EOF
   {
     "Version": "2012-10-17",
@@ -28,6 +28,6 @@ data "aws_iam_validator_policy" "example" {
 }
 
 output "findings" {
-  value = data.aws_iam_validator_policy.example.findings
+  value = data.aws-iam-validator.example.findings
 }
 ```
