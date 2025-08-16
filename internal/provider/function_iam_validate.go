@@ -85,6 +85,9 @@ func (f *ValidatePolicyFunction) Run(ctx context.Context, req function.RunReques
 		return
 	}
 
+	tflog.Info(ctx, fmt.Sprintf("ValidatePolicyFunction found %d findings", len(result.Findings)))
+	tflog.Info(ctx, fmt.Sprintf("Findings: %+v", result.Findings))
+
 	errors := []attr.Value{}
 	for _, finding := range result.Findings {
 		msg, _ := json.Marshal(finding)
