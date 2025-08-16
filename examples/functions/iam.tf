@@ -241,3 +241,10 @@ output "okay" {
 output "bad" {
   value = provider::aws-iam-validator::validate_policy(local.bad_data)
 }
+
+check "valid_check" {
+  assert {
+    condition = length(provider::aws-iam-validator::validate_policy(local.bad_data)) == 0
+    error_message = "IAM policy is not valid"
+  }
+}
