@@ -60,5 +60,7 @@ func (p *ExampleTimeProvider) Resources(_ context.Context) []func() resource.Res
 
 // Functions defines the functions implemented in the provider.
 func (p *ExampleTimeProvider) Functions(_ context.Context) []func() function.Function {
-	return nil
+	return []func() function.Function{
+		NewValidatePolicyFunction,
+	}
 }

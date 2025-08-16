@@ -124,5 +124,5 @@ EOT
 }
 
 output "timestamp" {
-  value = provider::aws-iam-validator::verify(local.test_data)
+  value = provider::aws-iam-validator::validate_policy(local.test_data, "IDENTITY_POLICY")
 }
