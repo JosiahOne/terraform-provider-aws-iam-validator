@@ -90,8 +90,11 @@ func (f *ValidatePolicyFunction) Run(ctx context.Context, req function.RunReques
 
 	errors := []attr.Value{}
 	for _, finding := range result.Findings {
-		msg, _ := json.Marshal(finding)
-		errors = append(errors, types.StringValue(string(msg)))
+		// Only include findings that are errors
+		if finding.FindingType == awstypes.ValidatePolicyFindingTypeError {
+			msg, _ := json.Marshal(finding)
+			errors = append(errors, types.StringValue(string(msg)))
+		}
 	}
 
 	outputObj, diags := types.ObjectValue(validatePolicyReturnAttrTypes, map[string]attr.Value{
