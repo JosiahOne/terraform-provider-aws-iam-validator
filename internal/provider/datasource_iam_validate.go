@@ -75,8 +75,10 @@ func (d *ValidatePolicyDataSource) Read(ctx context.Context, req datasource.Read
 
 	findings := []string{}
 	for _, finding := range result.Findings {
-		msg, _ := json.Marshal(finding)
-		findings = append(findings, string(msg))
+		if finding.FindingType == awstypes.ValidatePolicyFindingTypeError {
+			msg, _ := json.Marshal(finding)
+			findings = append(findings, string(msg))
+		}
 	}
 
 	data.Findings = findings
