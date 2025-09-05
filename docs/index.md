@@ -28,12 +28,7 @@ check "valid_check" {
 
 ```
 data "aws-iam-validator" "example" {
-  policy_json = <<EOF
-  {
-    "Version": "2012-10-17",
-    "Statement": [...]
-  }
-  EOF
+  policy_json = data.aws_iam_policy_document.some_policy.json
 }
 
 output "findings" {
