@@ -62,7 +62,7 @@ func (f *ValidatePolicyFunction) Run(ctx context.Context, req function.RunReques
 		return
 	}
 
-	var policyType string = "IDENTITY_POLICY"
+	var policyType = "IDENTITY_POLICY"
 	tflog.Info(ctx, "ValidatePolicyFunction.LoadingConfig")
 
 	cfg, err := config.LoadDefaultConfig(ctx)
