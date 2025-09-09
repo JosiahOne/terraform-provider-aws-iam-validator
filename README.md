@@ -31,7 +31,7 @@ data "aws-iam-validator" "example" {
 
 check "valid_check" {
   assert {
-    condition = length(provider::aws-iam-validator::validate_policy(data.aws-iam-validator.example.findings)) == 0
+    condition = length(data.aws-iam-validator.example.findings) == 0
     error_message = "IAM policy is not valid"
   }
 }
