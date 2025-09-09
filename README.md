@@ -1,4 +1,6 @@
 # terraform-provider-aws-iam-validator
+https://registry.terraform.io/providers/JosiahOne/aws-iam-validator/latest
+
 This terraform provider includes a terraform function and data source that can be used to validate any IAM policy documents.
 
 Behind the scenes it calls the ValidatePolicy AWS API and returns a list of findings. This is especially
@@ -27,7 +29,10 @@ data "aws-iam-validator" "example" {
   EOF
 }
 
-output "findings" {
-  value = data.aws-iam-validator.example.findings
+check "valid_check" {
+  assert {
+    condition = length(data.aws-iam-validator.example.findings) == 0
+    error_message = "IAM policy is not valid"
+  }
 }
 ```
